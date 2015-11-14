@@ -1,0 +1,37 @@
+{
+  "name": "spelly",
+  "version": "1.0.0",
+  "description": "pure javascript spellcheck that learns",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel -D -d lib src",
+    "test": "mocha --compilers js:babel-core/register --recursive",
+    "watch": "parallelshell 'npm run watch:build' 'npm run watch:test'",
+    "watch:build": "npm run build -- --watch",
+    "watch:test": "chokidar '{src,test}/**/*.js' -c 'npm test' --initial"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylanfoster/spelly.git"
+  },
+  "keywords": [
+    "javascript",
+    "spell",
+    "check"
+  ],
+  "author": "Dylan Foster <dylan947@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dylanfoster/spelly/issues"
+  },
+  "homepage": "https://github.com/dylanfoster/spelly#readme",
+  "devDependencies": {
+    "babel-cli": "^6.1.18",
+    "babel-core": "^6.1.21",
+    "babel-preset-es2015-node4": "^2.0.0",
+    "chai": "^3.4.1",
+    "chokidar-cli": "^1.1.1",
+    "mocha": "^2.3.3",
+    "parallelshell": "^2.0.0"
+  }
+}
