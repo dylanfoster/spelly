@@ -63,6 +63,8 @@ describe("Spelly", function () {
         let cached = configstore.get("wierd");
         expect(cached[0].word).to.eql("weird");
       });
+
+      it("reorders suggestions if item exists");
     });
   });
 
