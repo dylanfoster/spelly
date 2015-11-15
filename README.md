@@ -119,4 +119,4 @@ const spelly = new Spelly(dict, options);
 
 ## License
 
-See [LICENSE](license.md)
+See [LICENSE](LICENSE.md)
