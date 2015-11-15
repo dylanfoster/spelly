@@ -5,7 +5,11 @@ import { expect } from "chai";
 import Spelly from "../";
 
 describe("Spelly", function () {
-  it("requires a dictionary");
+  it("requires a dictionary", function () {
+    expect(function () {
+      new Spelly();
+    }).to.throw("Missing required dictionary");
+  });
 
   describe("#cache", function () {
     it("caches a spelling suggestion");
