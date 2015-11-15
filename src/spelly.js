@@ -60,11 +60,6 @@ class Spelly {
     return this._store.all;
   }
 
-  _decrement(decrement, item) {
-    item.score -= decrement;
-    return item;
-  }
-
   _addToCache(cacheKey, wordCache, suggestion) {
     this._reorderCache(suggestion, wordCache);
     wordCache.push(suggestion);
@@ -76,6 +71,11 @@ class Spelly {
     this._store.set(word, [suggestion]);
   }
 
+  _decrement(decrement, item) {
+    item.score -= decrement;
+    return item;
+  }
+
   _getStore(cacheOptions) {
     switch (cacheOptions.type) {
       case "configstore":
@@ -84,6 +84,10 @@ class Spelly {
       default:
         return cacheOptions.store || this._defaultStore;
     }
+  }
+
+  _reorder(increment, item) {
+    item.score += increment;
   }
 
   _reorderCache(newItem, cacheArray) {
@@ -98,10 +102,6 @@ class Spelly {
     });
 
     return cacheArray;
-  }
-
-  _reorder(increment, item) {
-    item.score += increment;
   }
 
   _sort(arr) {
