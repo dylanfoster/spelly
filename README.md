@@ -176,4 +176,4 @@ Retrieve the cache for a mispelled word or all words.
 
 ## License
 
-See [LICENSE](license.md)
+See [LICENSE](LICENSE.md)
