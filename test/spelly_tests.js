@@ -79,9 +79,8 @@ describe("Spelly", function () {
 
     it("returns cached suggestions", function () {
       expect(spelly.getCache()).to.eql({
-        "wierd": [
-          { word: "wired", score: 1 }
-        ]});
+        "wierd": [{ word: "wired", score: 1 }]
+      });
     });
 
     it("returns cached suggestions for a single word", function () {
