@@ -31,7 +31,12 @@
     "babel-preset-es2015-node4": "^2.0.0",
     "chai": "^3.4.1",
     "chokidar-cli": "^1.1.1",
+    "del": "^2.1.0",
     "mocha": "^2.3.3",
     "parallelshell": "^2.0.0"
+  },
+  "dependencies": {
+    "configstore": "^1.3.0",
+    "exists-sync": "0.0.3"
   }
 }
