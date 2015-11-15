@@ -33,14 +33,15 @@ class Spelly {
   clearCache(key, value) {
     if (key && value) {
       let values = this._store.get(key);
-
-      let newValues = values.filter(item => item.word !== value);
-
       let decrementer = 1;
+      let newValues = values.filter(item => item.word !== value);
+      let oldKey = values.filter(item => item.word === value)[0].score;
 
       newValues.forEach(item => {
-        this._decrement(decrementer, item);
-        ++decrementer
+        if (item.score >= oldKey) {
+          this._decrement(decrementer, item);
+          ++decrementer
+        }
       });
 
       this._store.set(key, newValues);
@@ -86,7 +87,7 @@ class Spelly {
     }
   }
 
-  _reorder(increment, item) {
+  _increment(increment, item) {
     item.score += increment;
   }
 
@@ -96,7 +97,7 @@ class Spelly {
 
     cacheArray.forEach(item => {
       if (item.score >= newItemId) {
-        this._reorder(incrementer, item);
+        this._increment(incrementer, item);
         ++incrementer;
       }
     });
