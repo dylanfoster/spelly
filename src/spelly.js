@@ -89,6 +89,7 @@ class Spelly {
 
   _increment(increment, item) {
     item.score += increment;
+    return item;
   }
 
   _reorderCache(newItem, cacheArray) {
