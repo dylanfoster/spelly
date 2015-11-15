@@ -96,7 +96,7 @@ Grab the first suggestion out of the list
 
 ### Learning
 
-Spelly uses [configstore]() by default for the suggestion cache, helping make it
+Spelly uses [configstore](https://github.com/yeoman/configstore) by default for the suggestion cache, helping make it
 both fast and smart. Each time a misspelled word is given to Spelly, it finds it
 in the store, or generates a suggestion, then adds it to the store.
 
@@ -113,7 +113,7 @@ let options = {
 const spelly = new Spelly(dict, options);
 ```
 
-Lastly, you can use an in-memory store. This is not suggested however. As Spelly
+Lastly, you can use an in-memory store, although this is not suggested. As Spelly
 continues to store more and more suggestions, eventually you WILL run out of memory
 
 ```javascript
@@ -132,8 +132,8 @@ const spelly = new Spelly(dict, options);
 
 Spelly constructor.
 
-  - **dictionary** Type: `Array|String` An array of words or path to a file a
-    containing newline separated list of words.
+  - **dictionary** Type: `Array|String` An array of words or path to a file
+    containing a newline separated list of words.
   - **options.cache** Type: `Object` Spelly cache options.
 
     - **cache.type** Type: `String` Cache type. Can be one of `configstore`,
