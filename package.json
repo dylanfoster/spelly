@@ -5,15 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build": "babel -D -d lib src",
+    "prepublish": "npm run build",
     "test": "mocha --compilers js:babel-core/register --recursive",
     "watch": "parallelshell 'npm run watch:build' 'npm run watch:test'",
     "watch:build": "npm run build -- --watch",
     "watch:test": "chokidar '{src,test}/**/*.js' -c 'npm test' --initial"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dylanfoster/spelly.git"
-  },
+  "repository": "dylanfoster/spelly",
   "keywords": [
     "javascript",
     "spell",
