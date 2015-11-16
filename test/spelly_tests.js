@@ -21,6 +21,7 @@ function readFile(filePath) {
 }
 
 describe("Spelly", function () {
+  this.timeout(3000);
   let store, spelly;
 
   beforeEach(function () {
