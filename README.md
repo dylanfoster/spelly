@@ -98,9 +98,10 @@ Grab the first suggestion out of the list
 
 ### Learning
 
-Spelly uses [configstore](https://github.com/yeoman/configstore) by default for the suggestion cache, helping make it
-both fast and smart. Each time a misspelled word is given to Spelly, it finds it
-in the store, or generates a suggestion, then adds it to the store.
+Spelly uses [configstore](https://github.com/yeoman/configstore) by default for
+the suggestion cache, helping make it both fast and smart. Each time a misspelled
+word is given to Spelly, it finds it in the store, or generates a suggestion,
+then adds it to the store.
 
 If you want to use a file store, simply pass it to the constructor
 
