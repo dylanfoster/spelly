@@ -1,5 +1,7 @@
 # Spelly
 
+[![Build Status](https://travis-ci.org/dylanfoster/spelly.svg?branch=master)](https://travis-ci.org/dylanfoster/spelly)
+
 Pure JavaScript spellchecker that learns as you use it <sup>1</sup>
 
 ## Installation
