@@ -126,6 +126,10 @@ describe("Spelly", function () {
   });
 
   describe("#check", function () {
+    afterEach(function () {
+      configstore.del("wierd");
+    });
+
     it("uses a cached suggestion if found", function () {
       configstore.set("wierd", doubleItemFixture);
 
@@ -147,9 +151,17 @@ describe("Spelly", function () {
       expect(weird.word).to.eql("weird");
     });
 
-    it("offers multiple suggestions");
+    it("offers multiple suggestions", function () {
+      let suggestions = spelly.check("wierd").suggestions;
 
-    it("caches suggestion results");
+      expect(suggestions.length).to.be.above(1);
+    });
+
+    it("caches suggestion results", function () {
+      let suggestions = spelly.check("wierd").suggestions;
+
+      expect(configstore.get("wierd")).to.eql(suggestions);
+    });
 
     it("uses a provided dictionary array");
   });

@@ -71,6 +71,7 @@ class Spelly {
       }))
     };
 
+    this._store.set(word, result.suggestions);
     return result;
   }
 
