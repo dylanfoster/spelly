@@ -19,7 +19,7 @@ const Spelly = require("spelly");
 
 let options = {
   cache: {
-    type: "configstore", // configstore, file or memory
+    type: "configstore",
     store: new Configstore("foo")
     // optional, defaults to internal Configstore instance under "spelly"
   }
@@ -41,18 +41,6 @@ let suggestions = spelly.check("wierd");
  *   }]
  * }
  */
-
-// event emitter
-
-spelly.check("wierd");
-
-spelly.on("suggestion", function (suggestion) {
-
-});
-
-spelly.on("error", function (err) { ... });
-
-spelly.on("done", function () { ... });
 ```
 
 Results will be cached in the chosen store, making Spelly smarter and faster
@@ -104,32 +92,6 @@ the suggestion cache, helping make it both fast and smart. Each time a misspelle
 word is given to Spelly, it finds it in the store, or generates a suggestion,
 then adds it to the store.
 
-If you want to use a file store, simply pass it to the constructor
-
-```javascript
-let options = {
-  cache: {
-    type: "file",
-    store: "/path/to/json/file.json"
-  }
-};
-
-const spelly = new Spelly(dict, options);
-```
-
-Lastly, you can use an in-memory store, although this is not suggested. As Spelly
-continues to store more and more suggestions, eventually you WILL run out of memory
-
-```javascript
-let options = {
-  cache: {
-    type: "memory"
-  }
-};
-
-const spelly = new Spelly(dict, options);
-```
-
 ### API
 
 #### `Spelly(dictionary, options)`
@@ -140,12 +102,10 @@ Spelly constructor.
     containing a newline separated list of words.
   - **options.cache** Type: `Object` Spelly cache options.
 
-    - **cache.type** Type: `String` Cache type. Can be one of `configstore`,
-      `file` or `memory`. **Default:** `configstore`.
-    - **cache.store** Type: `String|Object` Path to store file for `file` or
-      configstore instance (optional) for `configstore`.
+    - **cache.type** Type: `String` Cache type (`configstore`).
+    - **cache.store** Type: `Object` configstore instance (optional) for `configstore`.
 
-#### `check(word)` => Promise
+#### `check(word)`
 
 Spellcheck a word. returns a promise with the suggestions Object.
 
@@ -177,7 +137,12 @@ Retrieve the cache for a mispelled word or all words.
  - **misspelledWord** Type: `String`(optional) The misspelled word to retrieve
    cache for.
 
+#### `first(misspelledWord)`
+
+Retrieve the first suggestion for a mispelled word
+
 
 ## License
 
 See [LICENSE](LICENSE.md)
+
