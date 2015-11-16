@@ -3,6 +3,7 @@
 import fs from "fs";
 import { ok as Assert } from "assert";
 
+import _ from "lodash";
 import Configstore from "configstore";
 import exists from "exists-sync";
 
@@ -18,6 +19,7 @@ class Spelly {
     options.cache.type = options.cache.type || "configstore";
 
     this._store = this._getStore(options.cache);
+    this._dictionary = this._parseDictionary(dictionary);
   }
 
   cache(misspelled, suggestion) {
@@ -34,6 +36,42 @@ class Spelly {
     if (this.getCache(word)) {
       return this.getCache(word);
     }
+
+    let lowerCaseWord = word.toLowerCase();
+    let alterations = this._createAlterationsArray(lowerCaseWord);
+    let firstLetter = word.toLowerCase().charAt(0);
+    let dictionary = this._dictionary[firstLetter];
+    let score = 0;
+
+    let result = {
+      original: word,
+      suggestions: _.compact(dictionary.map(item => {
+        let isMatch = alterations.some(alt => {
+          let regex = new RegExp(item, "i");
+          return alt.replace(/\s/g, "").match(regex);
+        });
+
+        if (isMatch) {
+          let response;
+
+          if (word.length >=3 && item.length >= word.length - 2) {
+            response = {
+              word: item,
+              score: ++score
+            };
+          } else if (word.length < 3 && item.length >= word.length - 1) {
+            response = {
+              word: item,
+              score: ++score
+            };
+          }
+
+          return response;
+        }
+      }))
+    };
+
+    return result;
   }
 
   clearCache(key, value) {
@@ -74,6 +112,54 @@ class Spelly {
     this._store.set(cacheKey, this._sort(wordCache));
   }
 
+  _createAlterationsArray(word) {
+    let alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    let alterations = [];
+
+    this._addDeletion(alterations, word);
+    this._addTransposition(alterations, word);
+    this._addAlteration(alterations, word, alphabet);
+    this._addInseration(alterations, word, alphabet);
+
+    return alterations;
+  }
+
+  _addInseration(arr, word, alphabet) {
+    for (let i = 0; i > word.length; i++) {
+      for (let j in alphabet) {
+        arr.push(`${word.slice(0, i)} ${alphabet[j]} ${word.slice(i)}`);
+      }
+    }
+
+    return arr;
+  }
+
+  _addAlteration(arr, word, alphabet) {
+    for (let i = 0; i < word.length; i ++) {
+      for (let j in alphabet) {
+        arr.push(`${word.slice(0, i)} ${alphabet[j]} ${word.slice(i + 1)}`);
+      }
+    }
+
+    return arr;
+  }
+
+  _addTransposition(arr, word) {
+    for (let i = 0; i < word.length; i++) {
+      arr.push(`${word.slice(0, i)} ${word.slice(i + 1, i + 2)} ${word.slice(i, i + 1)} ${word.slice(i + 2)}`);
+    }
+
+    return arr;
+  }
+
+  _addDeletion(arr, word, alphabet) {
+    for (let i = 0; i < word.length; i++) {
+      arr.push(`${word.slice(0, i)} ${word.slice(i + 1)}`);
+    }
+
+    return arr;
+  }
+
   _createCacheItem(word, suggestion) {
     this._store.set(word, [suggestion]);
   }
@@ -96,6 +182,26 @@ class Spelly {
   _increment(increment, item) {
     item.score += increment;
     return item;
+  }
+
+  _parseDictionary(dictionary) {
+    if (typeof dictionary === "string") {
+      return this._parseDictionaryFile(dictionary);
+    } else if (typeof dictionary === "array") {
+      return dictionary;
+    }
+  }
+
+  _parseDictionaryFile(file) {
+    return _.groupBy(this._parseFile(file), function (word) {
+      return word.toLowerCase().charAt(0);
+    });
+  }
+
+  _parseFile(filePath) {
+    return fs.readFileSync(filePath).toString().split("\n")
+      .filter(line => line.length)
+      .map(line => line.trim());
   }
 
   _reorderCache(newItem, cacheArray) {

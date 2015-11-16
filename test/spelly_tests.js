@@ -135,13 +135,26 @@ describe("Spelly", function () {
           { word: "wired", score: 1 },
           { word: "weird", score: 2 }
       ]);
+
+      configstore.del("wierd");
     });
 
-    it("spell corrects a word");
+    it("spell corrects a word", function () {
+      let suggestions = spelly.check("wierd").suggestions;
+
+      let weird = suggestions.filter(suggestion => {
+        return suggestion.word === "weird";
+      })[0];
+
+      expect(weird.word).to.eql("weird");
+    });
 
     it("offers multiple suggestions");
 
     it("caches suggestion results");
   });
 
+  describe("streaming", function () {
+
+  });
 });
