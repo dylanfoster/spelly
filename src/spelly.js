@@ -30,6 +30,12 @@ class Spelly {
     }
   }
 
+  check(word) {
+    if (this.getCache(word)) {
+      return this.getCache(word);
+    }
+  }
+
   clearCache(key, value) {
     if (key && value) {
       let values = this._store.get(key);

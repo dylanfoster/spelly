@@ -126,6 +126,17 @@ describe("Spelly", function () {
   });
 
   describe("#check", function () {
+    it("uses a cached suggestion if found", function () {
+      configstore.set("wierd", doubleItemFixture);
+
+      let suggestions = spelly.check("wierd");
+
+      expect(suggestions).to.eql([
+          { word: "wired", score: 1 },
+          { word: "weird", score: 2 }
+      ]);
+    });
+
     it("spell corrects a word");
 
     it("offers multiple suggestions");
