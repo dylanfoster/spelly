@@ -120,12 +120,12 @@ class Spelly {
     this._addDeletion(alterations, word);
     this._addTransposition(alterations, word);
     this._addAlteration(alterations, word, alphabet);
-    this._addInseration(alterations, word, alphabet);
+    this._addInsertion(alterations, word, alphabet);
 
     return alterations;
   }
 
-  _addInseration(arr, word, alphabet) {
+  _addInsertion(arr, word, alphabet) {
     for (let i = 0; i > word.length; i++) {
       for (let j in alphabet) {
         arr.push(`${word.slice(0, i)} ${alphabet[j]} ${word.slice(i)}`);
