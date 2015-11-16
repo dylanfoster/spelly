@@ -142,9 +142,7 @@ describe("Spelly", function () {
     it("spell corrects a word", function () {
       let suggestions = spelly.check("wierd").suggestions;
 
-      let weird = suggestions.filter(suggestion => {
-        return suggestion.word === "weird";
-      })[0];
+      let weird = suggestions.filter(suggestion => suggestion.word === "weird")[0];
 
       expect(weird.word).to.eql("weird");
     });
@@ -152,6 +150,8 @@ describe("Spelly", function () {
     it("offers multiple suggestions");
 
     it("caches suggestion results");
+
+    it("uses a provided dictionary array");
   });
 
   describe("streaming", function () {
