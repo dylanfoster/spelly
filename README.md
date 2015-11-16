@@ -80,9 +80,17 @@ spelly.getCache();
 Grab the first suggestion out of the list
 
 ```javascript
-  spelly.first("wierd").then(suggestion => {
+let suggestion = spelly.first("wierd");
 
-  });
+/**
+ *{
+ *  original: "wierd",
+ *  suggestion: {
+ *    word: "weird",
+ *    score: 1
+ *  }
+ *}
+ */
 ```
 
 ### Learning
