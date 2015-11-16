@@ -24,9 +24,11 @@ let options = {
     // optional, defaults to internal Configstore instance under "spelly"
   }
 };
+
 const spelly = new Spelly("/usr/share/dict/words", options);
 
-spelly.check("wierd").then(suggestions => {
+let suggestions = spelly.check("wierd");
+
 /**
  * {
  *   original: "wierd",
@@ -39,7 +41,6 @@ spelly.check("wierd").then(suggestions => {
  *   }]
  * }
  */
-});
 
 // event emitter
 
