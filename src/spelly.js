@@ -105,20 +105,6 @@ class Spelly {
     }
   }
 
-  _convertToNumbers(word) {
-    return word.toLowerCase().split("")
-      .map(letter => {
-        let match = this._letterNumberMap.filter(item => {
-          return item.letter === letter;
-        })[0];
-
-        return {
-          letter: letter,
-          value: match.value
-        }
-      });
-  }
-
   first(word) {
     let { suggestions } = this.check(word);
 
@@ -176,6 +162,20 @@ class Spelly {
     }
 
     return arr;
+  }
+
+  _convertToNumbers(word) {
+    return word.toLowerCase().split("")
+      .map(letter => {
+        let match = this._letterNumberMap.filter(item => {
+          return item.letter === letter;
+        })[0];
+
+        return {
+          letter: letter,
+          value: match.value
+        }
+      });
   }
 
   _createAlterationsArray(word) {
