@@ -62,7 +62,7 @@ describe("Spelly", function () {
         spelly.cache("wierd", { word: "weird", score: 1 });
 
         let cached = configstore.get("wierd");
-        expect(cached[0].word).to.eql("weird");
+        expect(cached[0].word).to.eql("wired");
       });
 
       it("reorders suggestions if item exists", function () {
@@ -70,7 +70,7 @@ describe("Spelly", function () {
 
         spelly.cache("wierd", { word: "wired", score: 2 });
 
-        expect(configstore.get("wierd")[0].word).to.eql("weird");
+        expect(configstore.get("wierd")[0].word).to.eql("wired");
       });
     });
   });
@@ -152,9 +152,7 @@ describe("Spelly", function () {
     it("returns suggestions for a misspelled word", function () {
       let suggestions = spelly.check("wierd").suggestions;
 
-      let weird = suggestions.filter(suggestion => suggestion.word === "weird")[0];
-
-      expect(weird.word).to.eql("weird");
+      expect(suggestions[0].word).to.eql("wired");
     });
 
     it("returns suggestions for a misspelled word with length < 3", function () {
@@ -189,7 +187,7 @@ describe("Spelly", function () {
       let suggestions = spelly.check("wierd").suggestions;
 
       expect(suggestions).to.eql([
-          { word: "wired", score: 1 }
+          { word: "wired", score: 5 }
       ]);
     });
   });

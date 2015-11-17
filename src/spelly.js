@@ -4,6 +4,7 @@ import fs from "fs";
 import { ok as Assert } from "assert";
 
 import _ from "lodash";
+import alphabet from "alphabet";
 import Configstore from "configstore";
 import exists from "exists-sync";
 
@@ -20,6 +21,7 @@ class Spelly {
 
     this._store = this._getStore(options.cache);
     this._dictionary = this._parseDictionary(dictionary);
+    this._letterNumberMap = this._letterToNumber(alphabet);
   }
 
   cache(misspelled, suggestion) {
@@ -44,23 +46,33 @@ class Spelly {
     let alterations = this._createAlterationsArray(lowerCaseWord);
     let firstLetter = word.toLowerCase().charAt(0);
     let dictionary = this._dictionary[firstLetter];
+    let misspelledBynumber = this._letterToNumber(word.toLowerCase().split(""));
     let score = 0;
 
     let result = {
       original: word,
-      suggestions: _.compact(dictionary.map(item => {
+      suggestions: this._sort(_.compact(dictionary.map(item => {
         let isMatch = alterations.some(alt => {
           let regex = new RegExp(item, "i");
           return alt.replace(/\s/g, "").match(regex);
         });
 
-        if (isMatch) {
+
+        if (isMatch && item.length >= word.length - 1) {
+          let suggestionByNumber = this._letterToNumber(item.split(""));
+
+          let numberOfMatches = suggestionByNumber.filter(item => {
+            return misspelledBynumber.some(letter => {
+              return item.value == letter.value;
+            });
+          }).length;
+
           return {
             word: item,
-            score: ++score
+            score: numberOfMatches
           }
         }
-      }))
+      })))
     };
 
     this._store.set(word, result.suggestions);
@@ -114,7 +126,6 @@ class Spelly {
   }
 
   _createAlterationsArray(word) {
-    let alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
     let alterations = [];
 
     this._addDeletion(alterations, word);
@@ -191,6 +202,20 @@ class Spelly {
     return item;
   }
 
+  _letterToNumber(letters) {
+    let value = 0;
+
+    return letters.map(letter => {
+      let result = {
+        letter: letter,
+        value: value
+      };
+
+      ++value;
+      return result;
+    });
+  }
+
   _parseDictionary(dictionary) {
     if (typeof dictionary === "string") {
       return this._parseDictionaryFile(dictionary);
@@ -249,7 +274,7 @@ class Spelly {
 
   _sort(arr) {
     return arr.sort((a, b) => {
-      return a.score > b.score ? 1 : -1;
+      return a.score > b.score ? -1 : 1;
     });
   }
 }

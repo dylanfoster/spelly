@@ -35,6 +35,7 @@
     "parallelshell": "^2.0.0"
   },
   "dependencies": {
+    "alphabet": "^1.0.0",
     "babel-polyfill": "^6.1.19",
     "configstore": "^1.3.0",
     "exists-sync": "0.0.3",
