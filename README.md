@@ -33,11 +33,14 @@ let suggestions = spelly.check("wierd");
  * {
  *   original: "wierd",
  *   suggestions: [{
- *     word: "weird",
- *     score: 1
- *   }, {
  *     word: "wired",
- *     score: 2
+ *     score: 5
+ *   }, {
+ *     word: "weird",
+ *     score: 5
+ *   }, {
+ *     word: "wield",
+ *     score: 4
  *   }]
  * }
  */
@@ -50,12 +53,12 @@ each time it is used.
 
 You can manage your own cache of words by adding/removing them to/from the store.
 When adding a word, all suggestions beneath its score will be shifted down 1.
-(e.g. a score of `1` goes to `2`). If the suggestion already exists, it will be
+(e.g. a score of `4` goes to `3`). If the suggestion already exists, it will be
 moved appropriately according to the score given.
 
 ```javascript
 
-// add 'wired' with score '1' or move it to the top position
+// add 'wired' with score '1' or move it to the bottom position
 spelly.cache("weird", { word: "wired", score: 1 });
 
 // remove a suggestion for a misspelling
@@ -87,7 +90,7 @@ let suggestion = spelly.first("wierd");
  *  original: "wierd",
  *  suggestion: {
  *    word: "weird",
- *    score: 1
+ *    score: 5
  *  }
  *}
  */
@@ -127,8 +130,8 @@ Add a suggestion to a mispelled word.
  - **suggestion** Type: `Object`
    - **suggestion.word** Type: `String` The suggestion to add for the misspelled word.
    - **suggestion.score** Type: `Number` Score the suggestion. If the suggestion
-exists for the word, it will be re-scored based on the given score and all others
-below will be shifted down (or up depending on how you look at it) by 1.
+     exists for the word, it will be re-scored based on the given score and all
+     others below will be shifted down (or up depending on how you look at it) by 1.
 
 #### `clearCache([misspelledWord][,suggestion])`
 
@@ -153,4 +156,3 @@ Retrieve the first suggestion for a mispelled word
 ## License
 
 See [LICENSE](LICENSE.md)
-
