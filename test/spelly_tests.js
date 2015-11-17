@@ -134,20 +134,19 @@ describe("Spelly", function () {
 
   describe("#check", function () {
     afterEach(function () {
-      configstore.del("wierd");
+      spelly.clearCache();
     });
 
     it("uses a cached suggestion if found", function () {
       configstore.set("wierd", doubleItemFixture);
 
-      let suggestions = spelly.check("wierd");
+      let suggestions = spelly.check("wierd").suggestions;
 
       expect(suggestions).to.eql([
           { word: "wired", score: 1 },
           { word: "weird", score: 2 }
       ]);
 
-      configstore.del("wierd");
     });
 
     it("returns suggestions for a misspelled word", function () {
@@ -158,7 +157,14 @@ describe("Spelly", function () {
       expect(weird.word).to.eql("weird");
     });
 
-    it("returns suggestions for a misspelled word with length < 3");
+    it("returns suggestions for a misspelled word with length < 3", function () {
+      let suggestions = spelly.check("teh").suggestions;
+
+
+      let the = suggestions.filter(suggestion => suggestion.word === "the")[0];
+
+      expect(the.word).to.eql("the");
+    });
 
     it("offers multiple suggestions", function () {
       let suggestions = spelly.check("wierd").suggestions;
@@ -172,6 +178,19 @@ describe("Spelly", function () {
       expect(configstore.get("wierd")).to.eql(suggestions);
     });
 
-    it("uses a provided dictionary array");
+    it("uses a provided dictionary array", function () {
+      spelly = new Spelly(["wired"], {
+        cache: {
+          type: "configstore",
+          store: configstore
+        }
+      });
+
+      let suggestions = spelly.check("wierd").suggestions;
+
+      expect(suggestions).to.eql([
+          { word: "wired", score: 1 }
+      ]);
+    });
   });
 });

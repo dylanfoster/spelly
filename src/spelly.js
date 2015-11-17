@@ -34,7 +34,10 @@ class Spelly {
 
   check(word) {
     if (this.getCache(word)) {
-      return this.getCache(word);
+      return {
+        original: word,
+        suggestions: this.getCache(word)
+      }
     }
 
     let lowerCaseWord = word.toLowerCase();
@@ -52,21 +55,10 @@ class Spelly {
         });
 
         if (isMatch) {
-          let response;
-
-          if (word.length >=3 && item.length >= word.length - 2) {
-            response = {
-              word: item,
-              score: ++score
-            };
-          } else if (word.length < 3 && item.length >= word.length - 1) {
-            response = {
-              word: item,
-              score: ++score
-            };
+          return {
+            word: item,
+            score: ++score
           }
-
-          return response;
         }
       }))
     };
@@ -192,13 +184,17 @@ class Spelly {
   _parseDictionary(dictionary) {
     if (typeof dictionary === "string") {
       return this._parseDictionaryFile(dictionary);
-    } else if (typeof dictionary === "array") {
-      return dictionary;
+    } else if (Array.isArray(dictionary)) {
+      return this._group(dictionary);
     }
   }
 
   _parseDictionaryFile(file) {
-    return _.groupBy(this._parseFile(file), function (word) {
+    return this._group(this._parseFile(file));
+  }
+
+  _group(arr) {
+    return _.groupBy(arr, function (word) {
       return word.toLowerCase().charAt(0);
     });
   }
