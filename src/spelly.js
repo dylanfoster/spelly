@@ -107,10 +107,8 @@ class Spelly {
   }
 
   _addToCache(cacheKey, wordCache, suggestion) {
-    this._reorderCache(suggestion, wordCache);
-    wordCache.push(suggestion);
-
-    this._store.set(cacheKey, this._sort(wordCache));
+    let updatedCache = this._reorderCache(suggestion, wordCache);
+    this._store.set(cacheKey, this._sort(updatedCache));
   }
 
   _createAlterationsArray(word) {
@@ -170,6 +168,12 @@ class Spelly {
     return item;
   }
 
+  _fetchItem(cached, item) {
+    return cached.filter(part => {
+      return part.word = item.word;
+    })[0];
+  }
+
   _getStore(cacheOptions) {
     switch (cacheOptions.type) {
       case "configstore":
@@ -206,17 +210,35 @@ class Spelly {
   }
 
   _reorderCache(newItem, cacheArray) {
+    let cacheArrayCopy = cacheArray.slice();
     let newItemId = newItem.score;
     let incrementer = 1;
 
-    cacheArray.forEach(item => {
-      if (item.score >= newItemId) {
+    let hasSuggestion = cacheArray.some(item => {
+      return item.word === newItem.word;
+    });
+
+    cacheArrayCopy.forEach(item => {
+      if (hasSuggestion) {
+        if (item.word === newItem.word) {
+          item.score = newItem.score;
+        } else if (item.score === newItem.score) {
+          item.score == --item.score;
+        } else {
+          this._increment(incrementer, item);
+          ++incrementer;
+        }
+      } else {
         this._increment(incrementer, item);
         ++incrementer;
       }
     });
 
-    return cacheArray;
+    if (!hasSuggestion) {
+      cacheArrayCopy.push(newItem);
+    }
+
+    return cacheArrayCopy;
   }
 
   _sort(arr) {

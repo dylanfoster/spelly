@@ -65,7 +65,13 @@ describe("Spelly", function () {
         expect(cached[0].word).to.eql("weird");
       });
 
-      it("reorders suggestions if item exists");
+      it("reorders suggestions if item exists", function () {
+        configstore.set("wierd", doubleItemFixture);
+
+        spelly.cache("wierd", { word: "wired", score: 2 });
+
+        expect(configstore.get("wierd")[0].word).to.eql("weird");
+      });
     });
   });
 
@@ -144,13 +150,15 @@ describe("Spelly", function () {
       configstore.del("wierd");
     });
 
-    it("spell corrects a word", function () {
+    it("returns suggestions for a misspelled word", function () {
       let suggestions = spelly.check("wierd").suggestions;
 
       let weird = suggestions.filter(suggestion => suggestion.word === "weird")[0];
 
       expect(weird.word).to.eql("weird");
     });
+
+    it("returns suggestions for a misspelled word with length < 3");
 
     it("offers multiple suggestions", function () {
       let suggestions = spelly.check("wierd").suggestions;
@@ -165,9 +173,5 @@ describe("Spelly", function () {
     });
 
     it("uses a provided dictionary array");
-  });
-
-  describe("streaming", function () {
-
   });
 });
