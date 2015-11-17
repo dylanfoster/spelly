@@ -21,7 +21,7 @@ class Spelly {
 
     this._store = this._getStore(options.cache);
     this._dictionary = this._parseDictionary(dictionary);
-    this._letterNumberMap = this._letterToNumber(alphabet);
+    this._letterNumberMap = this._letterToNumber(alphabet.lower);
   }
 
   cache(misspelled, suggestion) {
@@ -46,30 +46,33 @@ class Spelly {
     let alterations = this._createAlterationsArray(lowerCaseWord);
     let firstLetter = word.toLowerCase().charAt(0);
     let dictionary = this._dictionary[firstLetter];
-    let misspelledBynumber = this._letterToNumber(word.toLowerCase().split(""));
     let score = 0;
 
+    let misspelledByNumber = this._convertToNumbers(word);
     let result = {
       original: word,
-      suggestions: this._sort(_.compact(dictionary.map(item => {
+      suggestions: this._sort(_.compact(dictionary.map(dict => {
         let isMatch = alterations.some(alt => {
-          let regex = new RegExp(item, "i");
+          let regex = new RegExp(dict, "i");
           return alt.replace(/\s/g, "").match(regex);
         });
 
 
-        if (isMatch && item.length >= word.length - 1) {
-          let suggestionByNumber = this._letterToNumber(item.split(""));
+        if (isMatch && dict.length >= word.length - 1) {
+          let suggestionByNumber = this._convertToNumbers(dict);
+          let matches = 0;
 
-          let numberOfMatches = suggestionByNumber.filter(item => {
-            return misspelledBynumber.some(letter => {
-              return item.value == letter.value;
+          for (let entry in misspelledByNumber) {
+            let isMatch = suggestionByNumber.some(item => {
+              return item.value === misspelledByNumber[entry].value;
             });
-          }).length;
+
+            if (isMatch) { ++matches }
+          }
 
           return {
-            word: item,
-            score: numberOfMatches
+            word: dict,
+            score: matches
           }
         }
       })))
@@ -102,6 +105,20 @@ class Spelly {
     }
   }
 
+  _convertToNumbers(word) {
+    return word.toLowerCase().split("")
+      .map(letter => {
+        let match = this._letterNumberMap.filter(item => {
+          return item.letter === letter;
+        })[0];
+
+        return {
+          letter: letter,
+          value: match.value
+        }
+      });
+  }
+
   first(word) {
     let { suggestions } = this.check(word);
 
@@ -123,17 +140,6 @@ class Spelly {
   _addToCache(cacheKey, wordCache, suggestion) {
     let updatedCache = this._reorderCache(suggestion, wordCache);
     this._store.set(cacheKey, this._sort(updatedCache));
-  }
-
-  _createAlterationsArray(word) {
-    let alterations = [];
-
-    this._addDeletion(alterations, word);
-    this._addTransposition(alterations, word);
-    this._addAlteration(alterations, word, alphabet);
-    this._addInsertion(alterations, word, alphabet);
-
-    return alterations;
   }
 
   _addInsertion(arr, word, alphabet) {
@@ -172,6 +178,17 @@ class Spelly {
     return arr;
   }
 
+  _createAlterationsArray(word) {
+    let alterations = [];
+
+    this._addDeletion(alterations, word);
+    this._addTransposition(alterations, word);
+    this._addAlteration(alterations, word, alphabet);
+    this._addInsertion(alterations, word, alphabet);
+
+    return alterations;
+  }
+
   _createCacheItem(word, suggestion) {
     this._store.set(word, [suggestion]);
   }
@@ -195,6 +212,12 @@ class Spelly {
       default:
         return cacheOptions.store || this._defaultStore;
     }
+  }
+
+  _group(arr) {
+    return _.groupBy(arr, function (word) {
+      return word.toLowerCase().charAt(0);
+    });
   }
 
   _increment(increment, item) {
@@ -226,12 +249,6 @@ class Spelly {
 
   _parseDictionaryFile(file) {
     return this._group(this._parseFile(file));
-  }
-
-  _group(arr) {
-    return _.groupBy(arr, function (word) {
-      return word.toLowerCase().charAt(0);
-    });
   }
 
   _parseFile(filePath) {
