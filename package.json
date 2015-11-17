@@ -1,6 +1,6 @@
 {
   "name": "spelly",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "pure javascript spellcheck that learns",
   "main": "index.js",
   "scripts": {
