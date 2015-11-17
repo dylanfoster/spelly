@@ -90,6 +90,16 @@ class Spelly {
     }
   }
 
+  first(word) {
+    let { suggestions } = this.check(word);
+
+    return {
+      original: word,
+      word: suggestions[0].word,
+      score: suggestions[0].score
+    }
+  }
+
   getCache(key) {
     if (key) {
       return this._store.get(key);

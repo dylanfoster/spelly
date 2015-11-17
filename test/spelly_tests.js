@@ -193,4 +193,19 @@ describe("Spelly", function () {
       ]);
     });
   });
+
+  describe("#first", function () {
+    beforeEach(function () {
+      configstore.set("wierd", [
+          { word: "wired", score: 1 },
+          { word: "weird", score: 2 }
+      ]);
+    });
+
+    it("returns the first suggestion from a list", function () {
+      let suggestion = spelly.first("wierd");
+
+      expect(suggestion.word).to.eql("wired");
+    });
+  });
 });
